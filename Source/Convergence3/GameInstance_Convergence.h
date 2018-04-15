@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
+#include "OnlineSubsystem.h"
 #include "GameInstance_Convergence.generated.h"
 
 UCLASS()
@@ -14,12 +15,13 @@ class CONVERGENCE3_API UGameInstance_Convergence : public UGameInstance
 public:
 	UGameInstance_Convergence(const FObjectInitializer & ObjectInitializer);
 
+	UFUNCTION(BlueprintCallable)
 	virtual void Init();
 
-	UFUNCTION(Exec)
+	UFUNCTION(BlueprintCallable)
 	void Host();
 	
-	UFUNCTION(Exec)
+	UFUNCTION(BlueprintCallable)
 	void Join(const FString& Address);
 
 	UFUNCTION(BlueprintCallable)
@@ -27,4 +29,11 @@ public:
 
 private:
 	TSubclassOf<class UUserWidget> MenuClass;
+
+	IOnlineSessionPtr SessionInterface;
+
+	void OnCreateSessionComplete(FName SessionName, bool Success);
+	void OnSessionDestroy(FName SessionName, bool Success);
+
+	void CreateSession();
 };

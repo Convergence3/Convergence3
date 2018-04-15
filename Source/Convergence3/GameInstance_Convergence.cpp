@@ -3,9 +3,12 @@
 #include "GameInstance_Convergence.h"
 #include "Engine/Engine.h"
 #include "OnlineSubsystem.h"
+#include "OnlineSessionSettings.h"
+#include "OnlineSessionInterface.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 
+const static FName SESSION_NAME = TEXT("SessionGame");
 
 UGameInstance_Convergence::UGameInstance_Convergence(const FObjectInitializer & ObjectInitializer)
 {
@@ -19,10 +22,11 @@ void UGameInstance_Convergence::Init()
 	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
 	if (Subsystem != nullptr)
 	{
-		IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+		SessionInterface = Subsystem->GetSessionInterface();
 		if (SessionInterface.IsValid())
 		{
-
+			SessionInterface->OnCreateSessionCompleteDelegates.AddUObject(this, &UGameInstance_Convergence::OnCreateSessionComplete);
+			SessionInterface->OnDestroySessionCompleteDelegates.AddUObject(this, &UGameInstance_Convergence::OnSessionDestroy);
 		}
 	}
 }
@@ -47,6 +51,46 @@ void UGameInstance_Convergence::LoadMenuWidget()
 
 void UGameInstance_Convergence::Host()
 {
+	if (SessionInterface.IsValid())
+	{
+		auto ExistingSession = SessionInterface->GetNamedSession(SESSION_NAME);
+		if (ExistingSession != nullptr)
+		{
+			SessionInterface->DestroySession(SESSION_NAME);
+		}
+		else
+		{
+			CreateSession();
+		}
+	}
+	else {
+		GLog->Log(TEXT("Session Interface not valid"));
+	}
+}
+
+void UGameInstance_Convergence::OnSessionDestroy(FName SessionName, bool Success)
+{
+	if (Success)
+	{
+		CreateSession();
+	}
+}
+
+void UGameInstance_Convergence::CreateSession()
+{
+	if (SessionInterface.IsValid())
+	{
+		FOnlineSessionSettings Settings;
+		SessionInterface->CreateSession(0, SESSION_NAME, Settings);
+	}
+}
+
+void UGameInstance_Convergence::OnCreateSessionComplete(FName SessionName, bool Success)
+{
+	if (!Success) {
+		GLog->Log(TEXT("!Hosting"));
+		return;
+	}
 	GLog->Log(TEXT("Hosting"));
 
 	UWorld* World = GetWorld();
