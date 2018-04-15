@@ -12,10 +12,17 @@ class CONVERGENCE3_API UGameInstance_Convergence : public UGameInstance
 	GENERATED_BODY()
 
 public:
+	UGameInstance_Convergence(const FObjectInitializer & ObjectInitializer);
+
 	UFUNCTION(Exec)
 	void Host();
 	
 	UFUNCTION(Exec)
 	void Join(const FString& Address);
 
+	UFUNCTION(BlueprintCallable)
+	void LoadMenu();
+
+private:
+	TSubclassOf<class UUserWidget> MenuClass;
 };
