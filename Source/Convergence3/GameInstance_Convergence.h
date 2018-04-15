@@ -14,6 +14,8 @@ class CONVERGENCE3_API UGameInstance_Convergence : public UGameInstance
 public:
 	UGameInstance_Convergence(const FObjectInitializer & ObjectInitializer);
 
+	virtual void Init();
+
 	UFUNCTION(Exec)
 	void Host();
 	
@@ -21,7 +23,7 @@ public:
 	void Join(const FString& Address);
 
 	UFUNCTION(BlueprintCallable)
-	void LoadMenu();
+	void LoadMenuWidget();
 
 private:
 	TSubclassOf<class UUserWidget> MenuClass;

@@ -2,6 +2,7 @@
 
 #include "GameInstance_Convergence.h"
 #include "Engine/Engine.h"
+#include "OnlineSubsystem.h"
 #include "UObject/ConstructorHelpers.h"
 #include "Blueprint/UserWidget.h"
 
@@ -13,7 +14,20 @@ UGameInstance_Convergence::UGameInstance_Convergence(const FObjectInitializer & 
 	MenuClass = MenuBPClass.Class;
 }
 
-void UGameInstance_Convergence::LoadMenu()
+void UGameInstance_Convergence::Init()
+{
+	IOnlineSubsystem* Subsystem = IOnlineSubsystem::Get();
+	if (Subsystem != nullptr)
+	{
+		IOnlineSessionPtr SessionInterface = Subsystem->GetSessionInterface();
+		if (SessionInterface.IsValid())
+		{
+
+		}
+	}
+}
+
+void UGameInstance_Convergence::LoadMenuWidget()
 {
 	if (!ensure(MenuClass != nullptr))return;
 	UUserWidget* Menu = CreateWidget<UUserWidget>(this, MenuClass);
