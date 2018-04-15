@@ -6,15 +6,16 @@
 #include "Engine/GameInstance.h"
 #include "GameInstance_Convergence.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class CONVERGENCE3_API UGameInstance_Convergence : public UGameInstance
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(Exec)
+	void Host();
 	
-	
-	
-	
+	UFUNCTION(Exec)
+	void Join(const FString& Address);
+
 };
