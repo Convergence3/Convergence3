@@ -4,6 +4,7 @@ Intermediate
 Saved
 .vscode
 .vs
+.bat
 *.VC.db
 *.opensdf
 *.opendb
@@ -12,4 +13,3 @@ Saved
 *.suo
 *.xcodeproj
 *.xcworkspace
-*.bat
